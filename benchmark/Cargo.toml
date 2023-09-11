@@ -1,0 +1,12 @@
+[package]
+name = "quickdiv-benchmark"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+quickdiv = { path = ".." }
+
+[profile.bench]
+lto = true
+opt-level = 3
