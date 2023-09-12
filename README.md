@@ -30,13 +30,14 @@ It requires Rust version 1.54 or greater. It is `#![no_std]` and `#![forbid(unsa
 use quickdiv::DivisorU64;
 
 fn is_quadratic_residue(q: u64, modulus: u64) -> bool {
-    // Initializing a divisor is more expensive than a single unoptimized
-    // division, to gain benefit you must divide multiple times by same divisor.
+    // Initializing a divisor is more expensive than a single
+    // unoptimized division, to gain a benefit you must divide
+    // multiple times by the same divisor.
     let modulus = DivisorU64::new(modulus);
 
-    // The original value can be recovered using ::get().
+    // The original value can be recovered by using ::get().
     for x in (0..modulus.get()) {
-        // A divisor can be used as the right-hand side operand with
+        // A divisor can be used as the second operand with
         // the / and % operators.
         if (x * x) % modulus == q {
             return true;
