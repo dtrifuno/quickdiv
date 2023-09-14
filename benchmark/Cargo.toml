@@ -7,6 +7,16 @@ publish = false
 [dependencies]
 quickdiv = { path = ".." }
 
+[dev-dependencies]
+criterion = "0.5.1"
+fastdivide = "0.4.0"
+reciprocal = "0.1.2"
+strength_reduce = "0.2.4"
+
+[[bench]]
+name = "compare_div"
+harness = false
+
 [profile.bench]
 lto = true
 opt-level = 3
