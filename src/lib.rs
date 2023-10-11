@@ -1,23 +1,26 @@
 #![no_std]
 #![forbid(unsafe_code)]
 
-//! QuickDiv is a Rust crate that allows you to speed up repeated division and modulo operations by
-//! the same divisor, based on the [libdivide C/C++ library](https://libdivide.com/).
+//! QuickDiv is a Rust crate that allows you to speed up repeated division and
+//! modulo operations by the same divisor, based on the
+//! [libdivide C/C++ library](https://libdivide.com/).
 //!
-//! On most hardware today integer division operations take longer to execute compared to operations
-//! like multiplication and addition. Because of this, compilers generally optimize division by a
-//! constant by replacing it with a cheaper sequence of shifts, multiplications and additions. This
-//! crate lets you apply a similar algorithm to optimize division by values that are only known at
+//! On most hardware today integer division operations take longer to execute
+//! compared to operations like multiplication and addition. Because of this,
+//! compilers generally optimize division by a constant, by replacing it with a
+//! cheaper sequence of shifts, multiplications and additions. This crate lets you
+//! apply a similar algorithm to optimize division by values that are only known at
 //! runtime.
 //!
-//! Performance gains will vary between platforms, CPUs, and integer widths, but you can expect
-//! dividing an integer by a precomputed divisor to be somewhere between 2 to 10 times faster
-//! compared to the built-in hardware division method. Note that preparing the divisor is more
-//! expensive than a single unoptimized division: it will take at least 2 divisions by the same
-//! divisor to break even.
+//! Performance gains will vary between platforms, CPUs, and integer widths, but you
+//! can expect dividing an integer by a precomputed divisor to be somewhere between
+//! 2 to 10 times faster compared to the built-in hardware division method. Note
+//! that preparing the divisor is more expensive than a single unoptimized
+//! division: it will take at least 2 divisions by the same divisor to break even.
 //!
-//! This crate supports primitive integer types of all widths, in both signed and unsigned variants.
-//! It requires Rust version 1.54 or greater. It is `#![no_std]` and `#![forbid(unsafe_code)]`.
+// This crate supports primitive integer types of all widths, in both signed and
+// unsigned variants. It requires Rust version 1.54 or greater. It is `#![no_std]`
+// and `#![forbid(unsafe_code)]`.
 //!
 //! # Example
 //!
