@@ -142,7 +142,6 @@ macro_rules! unsigned_impl {
         }
 
         // We have to implement our own const ilog2 to get MSRV below 1.67.
-        #[inline]
         const fn ilog2(n: $BaseT) -> u8 {
             (<$BaseT>::BITS - 1 - n.leading_zeros()) as u8
         }

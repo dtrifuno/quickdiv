@@ -153,7 +153,6 @@ macro_rules! signed_impl {
         #[doc = concat!("let d = ", stringify!($SelfT), "::new(13);")]
         /// let div = d.div_of(-30);
         /// assert_eq!(div, -2);
-        #[inline]
         pub const fn div_of(&self, n: $BaseT) -> $BaseT {
             match self.inner {
                 $InnerT::Shift(_, shift) => {
@@ -196,7 +195,6 @@ macro_rules! signed_impl {
             }
         }
 
-        #[inline]
         const fn abs(n: $BaseT) -> $UnsignedBaseT {
             if n < 0 {
                 ((-1i8) as $UnsignedBaseT).wrapping_mul(n as $UnsignedBaseT)
@@ -206,7 +204,6 @@ macro_rules! signed_impl {
         }
 
         // We have to implement our own const ilog2 to get MSRV below 1.67.
-        #[inline]
         const fn ilog2(n: $UnsignedBaseT) -> u8 {
             (<$UnsignedBaseT>::BITS - 1 - n.leading_zeros()) as u8
         }

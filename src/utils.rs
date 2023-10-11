@@ -16,7 +16,6 @@ macro_rules! mulh_impl {
         /// Multiply two words together, returning only the top half of the product.
         ///
         /// Adapted from Figure 8-2 in Hacker's Delight, 2nd Ed.
-        #[inline]
         const fn mulh(x: $BaseT, y: $BaseT) -> $BaseT {
             const HALF_WIDTH_BITS: u32 = <$BaseT>::BITS / 2;
             const LOWER_HALF_MASK: $BaseT = (1 << HALF_WIDTH_BITS) - 1;
@@ -42,7 +41,6 @@ macro_rules! mulh_impl {
 
 macro_rules! widen_div_rem_impl {
     ($BaseT:ty, $WiderT:ty) => {
-        #[inline]
         /// Divide a 2N-bit dividend by an N-bit divisor with remainder, assuming
         /// that the result fits into N bits and that the lower half of bits of the
         /// dividend are all zero.
