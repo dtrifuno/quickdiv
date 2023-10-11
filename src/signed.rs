@@ -4,7 +4,7 @@ macro_rules! declare_signed_structs {
         #[doc = concat!($SIZE)]
         /// signed integer values.
 
-        #[derive(Clone, Copy, PartialEq, Eq, Debug)]
+        #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
         pub struct $SelfT {
             inner: $InnerT,
         }
@@ -16,6 +16,18 @@ macro_rules! declare_signed_structs {
             MultiplyShift($BaseT, $BaseT, u8),
             MultiplyAddShift($BaseT, $BaseT, u8),
             MultiplyAddShiftNegate($BaseT, $BaseT, u8),
+        }
+
+        impl core::hash::Hash for $InnerT {
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+                match self {
+                    $InnerT::Shift(n, _) => n.hash(state),
+                    $InnerT::ShiftAndNegate(n, _) => n.hash(state),
+                    $InnerT::MultiplyShift(n, _, _) => n.hash(state),
+                    $InnerT::MultiplyAddShift(n, _, _) => n.hash(state),
+                    $InnerT::MultiplyAddShiftNegate(n, _, _) => n.hash(state),
+                }
+            }
         }
     };
 }
