@@ -1,11 +1,11 @@
 [package]
 name = "quickdiv"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2018"
 authors = ["Darko Trifunovski <dtrifuno@gmail.com>"]
 description = "Faster repeated division and modulo operations by the same divisor"
 readme = "README.md"
-exclude = ["/benchmark", ".git*"]
+exclude = ["/benchmarks", ".git*"]
 repository = "https://github.com/dtrifuno/quickdiv"
 license = "Zlib OR Apache-2.0 OR MIT"
 categories = ["algorithms", "no-std"]

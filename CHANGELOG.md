@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2023-10-11
+
 ### Added
 
 - `Hash` implementations for all types.
@@ -17,4 +19,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Initial release.
 
 [unreleased]: https://github.com/dtrifuno/quickdiv
+[0.1.1]: https://github.com/dtrifuno/quickdiv/releases/tag/v0.1.1
 [0.1.0]: https://github.com/dtrifuno/quickdiv/releases/tag/v0.1.0

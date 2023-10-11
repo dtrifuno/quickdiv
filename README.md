@@ -94,7 +94,7 @@ leading to faster performance on the `FizzBuzz` task.
   [Reciprocal](https://crates.io/crates/reciprocal).
 
 If you would like to run these benchmarks yourself, check out the [`benchmarks`
-crate](https://github.com/dtrifuno/quickdiv/tree/main/benchmark) in the GitHub
+crate](https://github.com/dtrifuno/quickdiv/tree/main/benchmarks) in the GitHub
 repository.
 
 ## License
