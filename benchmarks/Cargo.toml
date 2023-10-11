@@ -1,0 +1,35 @@
+[package]
+name = "division-benchmarks"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+fastdivide = "0.4.0"
+quickdiv = { path = ".." }
+reciprocal = "0.1.2"
+strength_reduce = "0.2.4"
+
+[dev-dependencies]
+divan = "0.1.0"
+fastrand = "2.0.1"
+
+[[bench]]
+name = "compare"
+harness = false
+
+[[bench]]
+name = "fizzbuzz"
+harness = false
+
+[[bench]]
+name = "lcg"
+harness = false
+
+[[bench]]
+name = "quotient_sum"
+harness = false
+
+[profile.bench]
+lto = true
+opt-level = 3
