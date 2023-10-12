@@ -1,5 +1,27 @@
 macro_rules! impl_traits {
     ($SelfT:ty, $BaseT:ty) => {
+        impl PartialEq for $SelfT {
+            #[inline]
+            fn eq(&self, other: &Self) -> bool {
+                self.get() == other.get()
+            }
+        }
+
+        impl Eq for $SelfT {}
+
+        impl core::hash::Hash for $SelfT {
+            #[inline]
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+                self.get().hash(state);
+            }
+        }
+
+        impl core::fmt::Debug for $SelfT {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                write!(f, "{}", self.get())
+            }
+        }
+
         impl core::ops::Div<$SelfT> for $BaseT {
             type Output = $BaseT;
 
@@ -29,22 +51,6 @@ macro_rules! impl_traits {
             #[inline]
             fn rem_assign(&mut self, rhs: $SelfT) {
                 *self = rhs.rem_of(*self)
-            }
-        }
-
-        impl PartialEq for $SelfT {
-            #[inline]
-            fn eq(&self, other: &Self) -> bool {
-                self.get() == other.get()
-            }
-        }
-
-        impl Eq for $SelfT {}
-
-        impl core::hash::Hash for $SelfT {
-            #[inline]
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-                self.get().hash(state);
             }
         }
     };

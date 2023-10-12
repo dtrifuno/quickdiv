@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Debug` now prints the value of the divisor instead of the inner struct.
+
 ## [0.1.1] - 2023-10-11
 
 ### Added

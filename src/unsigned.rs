@@ -3,12 +3,12 @@ macro_rules! declare_unsigned_structs {
         /// Faster divisor for division and modulo operations by
         #[doc = concat!($SIZE)]
         /// unsigned integer values.
-        #[derive(Clone, Copy, Debug)]
+        #[derive(Clone, Copy)]
         pub struct $SelfT {
             inner: $InnerT,
         }
 
-        #[derive(Clone, Copy, Debug)]
+        #[derive(Clone, Copy)]
         enum $InnerT {
             Shift($BaseT, u8),
             MultiplyShift($BaseT, $BaseT, u8),

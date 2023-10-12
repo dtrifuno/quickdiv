@@ -4,12 +4,12 @@ macro_rules! declare_signed_structs {
         #[doc = concat!($SIZE)]
         /// signed integer values.
 
-        #[derive(Clone, Copy, Debug)]
+        #[derive(Clone, Copy)]
         pub struct $SelfT {
             inner: $InnerT,
         }
 
-        #[derive(Clone, Copy, Debug)]
+        #[derive(Clone, Copy)]
         enum $InnerT {
             Shift($BaseT, u8),
             ShiftAndNegate($BaseT, u8),
