@@ -55,8 +55,8 @@ struct ReadmeDoctest {}
 
 extern crate core;
 
-#[macro_use] // import ops_impl!
-mod ops;
+#[macro_use] // import impl_traits!
+mod traits;
 #[macro_use] // import declare_signed_structs!, signed_impl!
 mod signed;
 #[macro_use] // import tests!
@@ -76,7 +76,7 @@ impl DivisorU8 {
     widen_div_rem_impl! { u8, u16 }
 }
 
-ops_impl! { DivisorU8, u8 }
+impl_traits! { DivisorU8, u8 }
 
 tests! { DivisorU8, u8 }
 
@@ -90,7 +90,7 @@ impl DivisorU16 {
     widen_div_rem_impl! { u16, u32 }
 }
 
-ops_impl! { DivisorU16, u16 }
+impl_traits! { DivisorU16, u16 }
 
 tests! { DivisorU16, u16 }
 
@@ -104,7 +104,7 @@ impl DivisorU32 {
     widen_div_rem_impl! { u32, u64 }
 }
 
-ops_impl! { DivisorU32, u32 }
+impl_traits! { DivisorU32, u32 }
 
 tests! { DivisorU32, u32 }
 
@@ -128,7 +128,7 @@ impl DivisorU64 {
     widen_mulh_impl! { u64, u128 }
 }
 
-ops_impl! { DivisorU64, u64 }
+impl_traits! { DivisorU64, u64 }
 
 tests! { DivisorU64, u64 }
 
@@ -142,7 +142,7 @@ impl DivisorU128 {
     divlu_impl! { u128 }
 }
 
-ops_impl! { DivisorU128, u128 }
+impl_traits! { DivisorU128, u128 }
 
 tests! { DivisorU128, u128 }
 
@@ -172,7 +172,7 @@ impl DivisorUsize {
     widen_div_rem_impl! { usize, u128 }
 }
 
-ops_impl! { DivisorUsize, usize }
+impl_traits! { DivisorUsize, usize }
 
 // DivisorI8
 
@@ -184,7 +184,7 @@ impl DivisorI8 {
     widen_div_rem_impl! { u8, u16 }
 }
 
-ops_impl! { DivisorI8, i8 }
+impl_traits! { DivisorI8, i8 }
 
 tests! { DivisorI8, i8 }
 
@@ -198,7 +198,7 @@ impl DivisorI16 {
     widen_div_rem_impl! { u16, u32 }
 }
 
-ops_impl! { DivisorI16, i16 }
+impl_traits! { DivisorI16, i16 }
 
 tests! { DivisorI16, i16 }
 
@@ -212,7 +212,7 @@ impl DivisorI32 {
     widen_div_rem_impl! { u32, u64 }
 }
 
-ops_impl! { DivisorI32, i32 }
+impl_traits! { DivisorI32, i32 }
 
 tests! { DivisorI32, i32 }
 
@@ -236,7 +236,7 @@ impl DivisorI64 {
     widen_div_rem_impl! { u64, u128 }
 }
 
-ops_impl! { DivisorI64, i64 }
+impl_traits! { DivisorI64, i64 }
 
 tests! { DivisorI64, i64 }
 
@@ -250,7 +250,7 @@ impl DivisorI128 {
     divlu_impl! { u128 }
 }
 
-ops_impl! { DivisorI128, i128 }
+impl_traits! { DivisorI128, i128 }
 
 tests! { DivisorI128, i128 }
 
@@ -280,4 +280,4 @@ impl DivisorIsize {
     widen_div_rem_impl! { usize, u128 }
 }
 
-ops_impl! { DivisorIsize, isize }
+impl_traits! { DivisorIsize, isize }

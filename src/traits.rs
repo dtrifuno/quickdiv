@@ -1,4 +1,4 @@
-macro_rules! ops_impl {
+macro_rules! impl_traits {
     ($SelfT:ty, $BaseT:ty) => {
         impl core::ops::Div<$SelfT> for $BaseT {
             type Output = $BaseT;
@@ -29,6 +29,22 @@ macro_rules! ops_impl {
             #[inline]
             fn rem_assign(&mut self, rhs: $SelfT) {
                 *self = rhs.rem_of(*self)
+            }
+        }
+
+        impl PartialEq for $SelfT {
+            #[inline]
+            fn eq(&self, other: &Self) -> bool {
+                self.get() == other.get()
+            }
+        }
+
+        impl Eq for $SelfT {}
+
+        impl core::hash::Hash for $SelfT {
+            #[inline]
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+                self.get().hash(state);
             }
         }
     };
