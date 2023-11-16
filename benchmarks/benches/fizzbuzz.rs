@@ -1,4 +1,5 @@
-use std::cell::RefCell;
+use std::iter::repeat_with;
+
 use divan::black_box;
 
 use quickdiv::*;
@@ -10,16 +11,12 @@ macro_rules! fizzbuzz {
     ($name:ident, $BaseT:ident, $divides:expr, $div0:expr, $div1:expr) => {
         #[divan::bench()]
         fn $name(bencher: divan::Bencher) {
-            let rng = RefCell::new(fastrand::Rng::with_seed(SEED));
+            let mut rng = fastrand::Rng::with_seed(SEED);
 
             bencher
                 .counter(divan::counter::ItemsCount::new(BATCH_SIZE))
-                .with_inputs(|| {
-                        (0..BATCH_SIZE)
-                            .map(|_| rng.borrow_mut().$BaseT(..))
-                            .collect::<Vec<_>>()
-                })
-                .bench_local_refs(|values| {
+                .with_inputs(|| repeat_with(|| rng.$BaseT(..)).take(BATCH_SIZE).collect())
+                .bench_local_refs(|values: &mut Vec<_>| {
                     let mut count_div_0s = 0;
                     let mut count_div_1s = 0;
 
@@ -30,7 +27,6 @@ macro_rules! fizzbuzz {
                         if $divides(*n, div_0) {
                             count_div_0s += 1;
                         }
-
                         if $divides(*n, div_1) {
                             count_div_1s += 1;
                         }

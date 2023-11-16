@@ -1,5 +1,4 @@
 use divan::black_box;
-use std::cell::RefCell;
 
 use quickdiv::*;
 
@@ -10,14 +9,14 @@ macro_rules! lcg {
     ($name:ident, $BaseT:ident, $multiplier: expr, $modulus:expr) => {
         #[divan::bench()]
         fn $name(bencher: divan::Bencher) {
-            let rng = RefCell::new(fastrand::Rng::with_seed(SEED));
+            let mut rng = fastrand::Rng::with_seed(SEED);
             let modulus = $modulus;
 
             bencher
                 .counter(divan::counter::ItemsCount::new(BATCH_SIZE))
                 .with_inputs(|| {
                     let v: Vec<$BaseT> = Vec::with_capacity(BATCH_SIZE);
-                    let seed = rng.borrow_mut().$BaseT(..);
+                    let seed = rng.$BaseT(..);
                     (v, seed)
                 })
                 .bench_local_refs(|(v, seed)| {

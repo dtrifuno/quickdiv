@@ -1,31 +1,31 @@
+use std::iter::repeat_with;
+
 use divan::black_box;
+
 use quickdiv::*;
-use std::cell::RefCell;
 
 const BATCH_SIZE: usize = 1000;
 const SEED: u64 = 42;
 
 macro_rules! quotient_sum {
-    ($name:ident, $BaseT:ident, $new_fn:expr) => {
+    ($name:ident, $BaseT:ident, $new_div_fn:expr) => {
         #[divan::bench()]
         fn $name(bencher: divan::Bencher) {
-            let rng = RefCell::new(fastrand::Rng::with_seed(SEED));
+            let mut rng = fastrand::Rng::with_seed(SEED);
 
             bencher
                 .counter(divan::counter::ItemsCount::new(BATCH_SIZE))
                 .with_inputs(|| {
-                    let d = $new_fn(rng.borrow_mut().$BaseT(1..));
-                    let values = (0..BATCH_SIZE)
-                        .map(|_| rng.borrow_mut().$BaseT(..))
+                    let d = $new_div_fn(rng.$BaseT(1..));
+                    let values = repeat_with(|| rng.$BaseT(..))
+                        .take(BATCH_SIZE)
                         .collect::<Vec<_>>();
                     (values, d)
                 })
                 .bench_local_refs(|(values, d)| {
-                    let mut sum: $BaseT = 0;
-                    for value in values {
-                        sum = sum.wrapping_add(black_box(*value / *d));
-                    }
-                    black_box(sum);
+                    values
+                        .iter()
+                        .fold(0, |acc: $BaseT, x| acc.wrapping_add(black_box(*x / *d)))
                 });
         }
     };

@@ -1,4 +1,4 @@
-use std::cell::RefCell;
+use std::iter::repeat_with;
 
 const BATCH_SIZE: usize = 1000;
 /// Divisors correspond to the three different paths of fastdivide and quickdiv.
@@ -12,16 +12,12 @@ mod new {
         ($name:ident, $new_fn:expr) => {
             #[divan::bench()]
             fn $name(bencher: divan::Bencher) {
-                let rng = RefCell::new(fastrand::Rng::with_seed(SEED));
+                let mut rng = fastrand::Rng::with_seed(SEED);
 
                 bencher
                     .counter(divan::counter::ItemsCount::new(BATCH_SIZE))
-                    .with_inputs(|| {
-                        (0..BATCH_SIZE)
-                            .map(|_| rng.borrow_mut().u64(2..u64::MAX))
-                            .collect::<Vec<_>>()
-                    })
-                    .bench_local_refs(|divisors| {
+                    .with_inputs(|| repeat_with(|| rng.u64(2..)).take(BATCH_SIZE).collect())
+                    .bench_local_refs(|divisors: &mut Vec<u64>| {
                         for n in divisors {
                             divan::black_box($new_fn(*n));
                         }
@@ -46,18 +42,13 @@ mod fixed_div_sum {
         ($name:ident, $new_fn:expr, $div_fn:expr) => {
             #[divan::bench(consts = DIVISORS, sample_size = 1000)]
             fn $name<const D: u64>(bencher: divan::Bencher) {
-                let rng = RefCell::new(fastrand::Rng::with_seed(SEED));
-
+                let mut rng = fastrand::Rng::with_seed(SEED);
                 let d = $new_fn(D);
 
                 bencher
                     .counter(divan::counter::ItemsCount::new(BATCH_SIZE))
-                    .with_inputs(|| {
-                        (0..BATCH_SIZE)
-                            .map(|_| rng.borrow_mut().u64(..))
-                            .collect::<Vec<_>>()
-                    })
-                    .bench_local_refs(|values| {
+                    .with_inputs(|| repeat_with(|| rng.u64(2..)).take(BATCH_SIZE).collect())
+                    .bench_local_refs(|values: &mut Vec<u64>| {
                         let mut sum: u64 = 0;
                         for value in values {
                             sum = sum.wrapping_add(divan::black_box($div_fn(*value, d)));
@@ -100,21 +91,18 @@ mod random_div_sum {
         ($name:ident, $new_fn:expr, $div_fn:expr) => {
             #[divan::bench()]
             fn $name(bencher: divan::Bencher) {
-                let rng = RefCell::new(fastrand::Rng::with_seed(SEED));
+                let mut rng = fastrand::Rng::with_seed(SEED);
 
                 bencher
                     .with_inputs(|| {
-                        let values = (0..BATCH_SIZE)
-                            .map(|_| rng.borrow_mut().u64(..))
-                            .collect::<Vec<_>>();
-
-                        let divisors = (0..BATCH_SIZE)
-                            .map(|_| rng.borrow_mut().usize(0..DIVISORS.len()))
-                            .map(|i: usize| $new_fn(DIVISORS[i]))
-                            .collect::<Vec<_>>();
+                        let values = repeat_with(|| rng.u64(..)).take(BATCH_SIZE).collect();
+                        let divisors = repeat_with(|| rng.usize(..DIVISORS.len()))
+                            .map(|i| $new_fn(DIVISORS[i]))
+                            .take(BATCH_SIZE)
+                            .collect();
                         (values, divisors)
                     })
-                    .bench_local_refs(|(values, divisors)| {
+                    .bench_local_refs(|(values, divisors): &mut (Vec<_>, Vec<_>)| {
                         let mut sum: u64 = 0;
                         for (&value, &d) in values.iter().zip(divisors.iter()) {
                             sum = sum.wrapping_add(divan::black_box($div_fn(value, d)));
