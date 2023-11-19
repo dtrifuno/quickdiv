@@ -10,18 +10,13 @@ mod new {
 
     macro_rules! bench_create_divisor {
         ($name:ident, $new_fn:expr) => {
-            #[divan::bench()]
+            #[divan::bench(sample_count = 1000)]
             fn $name(bencher: divan::Bencher) {
                 let mut rng = fastrand::Rng::with_seed(SEED);
-
                 bencher
-                    .counter(divan::counter::ItemsCount::new(BATCH_SIZE))
-                    .with_inputs(|| repeat_with(|| rng.u64(2..)).take(BATCH_SIZE).collect())
-                    .bench_local_refs(|divisors: &mut Vec<u64>| {
-                        for n in divisors {
-                            divan::black_box($new_fn(*n));
-                        }
-                    })
+                    .counter(1u32)
+                    .with_inputs(|| rng.u64(2..))
+                    .bench_local_values(|n| $new_fn(n));
             }
         };
     }
@@ -46,21 +41,19 @@ mod fixed_div_sum {
                 let d = $new_fn(D);
 
                 bencher
-                    .counter(divan::counter::ItemsCount::new(BATCH_SIZE))
+                    .counter(BATCH_SIZE)
                     .with_inputs(|| repeat_with(|| rng.u64(2..)).take(BATCH_SIZE).collect())
                     .bench_local_refs(|values: &mut Vec<u64>| {
-                        let mut sum: u64 = 0;
-                        for value in values {
-                            sum = sum.wrapping_add(divan::black_box($div_fn(*value, d)));
-                        }
-                        divan::black_box(sum);
+                        values.iter().fold(0u64, |acc, &x| {
+                            acc.wrapping_add(divan::black_box($div_fn(x, d)))
+                        })
                     });
             }
         };
     }
 
     bench_fixed_div_sum!(compiler, |x| x, |n, d| n / d);
-    bench_fixed_div_sum!(cpu, divan::black_box, |n, d| n / d);
+    bench_fixed_div_sum!(cpu, divan::black_box, |n, d| n / divan::black_box(d));
     bench_fixed_div_sum!(
         fastdivide,
         fastdivide::DividerU64::divide_by,
@@ -94,7 +87,7 @@ mod random_div_sum {
                 let mut rng = fastrand::Rng::with_seed(SEED);
 
                 bencher
-                    .with_inputs(|| {
+                    .with_inputs(|| -> (Vec<_>, Vec<_>) {
                         let values = repeat_with(|| rng.u64(..)).take(BATCH_SIZE).collect();
                         let divisors = repeat_with(|| rng.usize(..DIVISORS.len()))
                             .map(|i| $new_fn(DIVISORS[i]))
@@ -102,12 +95,13 @@ mod random_div_sum {
                             .collect();
                         (values, divisors)
                     })
-                    .bench_local_refs(|(values, divisors): &mut (Vec<_>, Vec<_>)| {
-                        let mut sum: u64 = 0;
-                        for (&value, &d) in values.iter().zip(divisors.iter()) {
-                            sum = sum.wrapping_add(divan::black_box($div_fn(value, d)));
-                        }
-                        divan::black_box(sum);
+                    .bench_local_refs(|(values, divisors)| {
+                        values
+                            .iter()
+                            .zip(divisors.iter())
+                            .fold(0u64, |acc, (&x, &d)| {
+                                acc.wrapping_add(divan::black_box($div_fn(x, d)))
+                            })
                     });
             }
         };

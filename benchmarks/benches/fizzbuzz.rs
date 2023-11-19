@@ -12,6 +12,8 @@ macro_rules! fizzbuzz {
         #[divan::bench()]
         fn $name(bencher: divan::Bencher) {
             let mut rng = fastrand::Rng::with_seed(SEED);
+            let div_0 = $div0;
+            let div_1 = $div1;
 
             bencher
                 .counter(divan::counter::ItemsCount::new(BATCH_SIZE))
@@ -19,9 +21,6 @@ macro_rules! fizzbuzz {
                 .bench_local_refs(|values: &mut Vec<_>| {
                     let mut count_div_0s = 0;
                     let mut count_div_1s = 0;
-
-                    let div_0 = $div0;
-                    let div_1 = $div1;
 
                     for n in values {
                         if $divides(*n, div_0) {
