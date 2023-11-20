@@ -1,5 +1,4 @@
 #![no_std]
-#![forbid(unsafe_code)]
 
 //! QuickDiv is a Rust crate that allows you to speed up repeated division and
 //! modulo operations by the same divisor, based on the

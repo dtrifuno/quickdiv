@@ -10,8 +10,17 @@ repository = "https://github.com/dtrifuno/quickdiv"
 license = "Zlib OR Apache-2.0 OR MIT"
 categories = ["algorithms", "no-std"]
 keywords = ["division", "modulus", "arithmetic", "no_std"]
+rust-version = "1.54"
 
 [dependencies]
 
 [dev-dependencies]
 quickcheck = "1.0"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+pedantic = "warn"
+must_use_candidate = "allow"
+doc_markdown = "allow"
