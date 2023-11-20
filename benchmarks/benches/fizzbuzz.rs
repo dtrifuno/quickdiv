@@ -4,12 +4,16 @@ use divan::black_box;
 
 use quickdiv::*;
 
+fn main() {
+    divan::main();
+}
+
 const BATCH_SIZE: usize = 1000;
 const SEED: u64 = 42;
 
 macro_rules! fizzbuzz {
-    ($name:ident, $BaseT:ident, $divides:expr, $div0:expr, $div1:expr) => {
-        #[divan::bench()]
+    ($name:ident, $BaseT:ident, $divides_fn:expr, $div0:expr, $div1:expr) => {
+        #[divan::bench(sample_count = 1000)]
         fn $name(bencher: divan::Bencher) {
             let mut rng = fastrand::Rng::with_seed(SEED);
             let div_0 = $div0;
@@ -23,15 +27,15 @@ macro_rules! fizzbuzz {
                     let mut count_div_1s = 0;
 
                     for n in values {
-                        if $divides(*n, div_0) {
+                        if $divides_fn(*n, div_0) {
                             count_div_0s += 1;
                         }
-                        if $divides(*n, div_1) {
+                        if $divides_fn(*n, div_1) {
                             count_div_1s += 1;
                         }
                     }
 
-                    black_box((count_div_0s, count_div_1s));
+                    (count_div_0s, count_div_1s)
                 })
         }
     };
@@ -68,7 +72,3 @@ bench_fizzbuzz!(DivisorU32, u32);
 bench_fizzbuzz!(DivisorU64, u64);
 bench_fizzbuzz!(DivisorU128, u128);
 bench_fizzbuzz!(DivisorUsize, usize);
-
-fn main() {
-    divan::main();
-}

@@ -4,28 +4,30 @@ use divan::black_box;
 
 use quickdiv::*;
 
+fn main() {
+    divan::main();
+}
+
 const BATCH_SIZE: usize = 1000;
 const SEED: u64 = 42;
 
 macro_rules! quotient_sum {
     ($name:ident, $BaseT:ident, $new_div_fn:expr) => {
-        #[divan::bench()]
+        #[divan::bench(sample_count = 1000)]
         fn $name(bencher: divan::Bencher) {
             let mut rng = fastrand::Rng::with_seed(SEED);
 
             bencher
                 .counter(divan::counter::ItemsCount::new(BATCH_SIZE))
-                .with_inputs(|| {
-                    let d = $new_div_fn(rng.$BaseT(1..));
-                    let values = repeat_with(|| rng.$BaseT(..))
-                        .take(BATCH_SIZE)
-                        .collect::<Vec<_>>();
-                    (values, d)
+                .with_inputs(|| -> (Vec<_>, _) {
+                    let dividends = repeat_with(|| rng.$BaseT(..)).take(BATCH_SIZE).collect();
+                    let divisor = $new_div_fn(rng.$BaseT(1..));
+                    (dividends, divisor)
                 })
-                .bench_local_refs(|(values, d)| {
-                    values
+                .bench_local_refs(|(dividends, divisor)| {
+                    dividends
                         .iter()
-                        .fold(0, |acc: $BaseT, x| acc.wrapping_add(black_box(*x / *d)))
+                        .fold(0, |acc: $BaseT, x| acc.wrapping_add(*x / *divisor))
                 });
         }
     };
@@ -55,7 +57,3 @@ bench_quotient_sum!(DivisorU32, u32);
 bench_quotient_sum!(DivisorU64, u64);
 bench_quotient_sum!(DivisorU128, u128);
 bench_quotient_sum!(DivisorUsize, usize);
-
-fn main() {
-    divan::main();
-}
